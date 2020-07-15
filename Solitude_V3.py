@@ -495,29 +495,31 @@ def animation():
     sleep(short_delay)
 
 
+# minimizer plays first
 if __name__ == '__main__':
     # animation()
     maxi = 'X'
     mini = 'O'
-    game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', 'X']
-    # gp = copy.deepcopy(game)
-    # for g in range(0, 10):
-    #     if gp[g] == '-':
-    #         gp[g] = ' '
-    # print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
-    # print("-----------------")
-    # print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
-    # print("-----------------")
-    # print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
-    # opponent = int(input("Your turn: "))
-    # game[opponent] = 'O'
+    game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', 'O']
+    gp = copy.deepcopy(game)
+    for g in range(0, 10):
+        if gp[g] == '-':
+            gp[g] = ' '
+    print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
+    print("-----------------")
+    print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
+    print("-----------------")
+    print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
+    opponent = int(input("Your turn: "))
+    game[opponent] = 'O'
+    
+    game[9] = 'X'
     print("Hmm...")
     arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
     game = copy.deepcopy(arr[1])
     # print(arr[0])
-    game[9] = 'X'
     gp = copy.deepcopy(game)
-    for g in range(0, 10):
+    for g in range(0, 9):
         if gp[g] == '-':
             gp[g] = ' '
     print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
@@ -531,6 +533,7 @@ if __name__ == '__main__':
         opponent = int(input("Your turn: "))
         if game[opponent] == '-':
             game[opponent] = 'O'
+            game[9] = 'X'
         else:
             print("    Open your eyes, dummy! Can't you see that's not a valid move?")
             continue
@@ -541,7 +544,7 @@ if __name__ == '__main__':
             # print(arr[0])
             game[9] = 'X'
         gp = copy.deepcopy(game)
-        for g in range(0, 10):
+        for g in range(0, 9):
             if gp[g] == '-':
                 gp[g] = ' '
         print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
@@ -558,3 +561,70 @@ if __name__ == '__main__':
         print("You won, hats off! I guess I underestimated you.")
     else:
         print("You dare draw me!")
+
+# =============================================================================
+# # maximizer plays first
+# if __name__ == '__main__':
+#     # animation()
+#     maxi = 'X'
+#     mini = 'O'
+#     game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', 'X']
+#     # gp = copy.deepcopy(game)
+#     # for g in range(0, 10):
+#     #     if gp[g] == '-':
+#     #         gp[g] = ' '
+#     # print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
+#     # print("-----------------")
+#     # print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
+#     # print("-----------------")
+#     # print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
+#     # opponent = int(input("Your turn: "))
+#     # game[opponent] = 'O'
+#     print("Hmm...")
+#     arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
+#     game = copy.deepcopy(arr[1])
+#     # print(arr[0])
+#     game[9] = 'X'
+#     gp = copy.deepcopy(game)
+#     for g in range(0, 10):
+#         if gp[g] == '-':
+#             gp[g] = ' '
+#     print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
+#     print("-----------------")
+#     print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
+#     print("-----------------")
+#     print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
+#     print("I'm done")
+#     print("")
+#     while (not is_win(game, 'X')) and (not is_win(game, 'O')) and (not is_draw(game)):
+#         opponent = int(input("Your turn: "))
+#         if game[opponent] == '-':
+#             game[opponent] = 'O'
+#         else:
+#             print("    Open your eyes, dummy! Can't you see that's not a valid move?")
+#             continue
+#         if (not is_win(game, 'X')) and (not is_win(game, 'O')) and (not is_draw(game)):
+#             print("Hmm...")
+#             arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
+#             game = copy.deepcopy(arr[1])
+#             # print(arr[0])
+#             game[9] = 'X'
+#         gp = copy.deepcopy(game)
+#         for g in range(0, 10):
+#             if gp[g] == '-':
+#                 gp[g] = ' '
+#         print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
+#         print("-----------------")
+#         print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
+#         print("-----------------")
+#         print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
+#         print("I'm done")
+#         print("")
+#     
+#     if is_win(game, 'X'):
+#         print("I won the game you dumbass!")
+#     elif is_win(game, 'O'):
+#         print("You won, hats off! I guess I underestimated you.")
+#     else:
+#         print("You dare draw me!")
+# =============================================================================
