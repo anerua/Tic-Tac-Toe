@@ -5,13 +5,15 @@
 
     Notes:
         1. A state is a particular unique game board
-        2. X is the Maximizer and O is the Minimizer
+        2. AI is the Maximizer and human player is the Minimizer
 """
 
 import copy
 import math
 from time import sleep
 
+MAXI = ''
+MINI = ''
 
 def is_draw(state):
     """
@@ -27,10 +29,9 @@ def is_draw(state):
     bool
         Returns True if the game, as represented by state, is a draw and returns False otherwise.
 
-    """
-    
-    # possible skip: did not check if the game is a win or loss. Try to do this.
-    if is_win(state, 'X') or is_win(state, 'O'):
+    """ 
+   
+    if is_win(state, MAXI) or is_win(state, MINI):
         return False
     else:
         if '-' not in state:
@@ -182,7 +183,7 @@ def end_state(state):
         Returns True if the state is a win state for any player or a draw state. Returns False otherwise.
 
     """
-    if is_draw(state) or is_win(state, 'X') or is_win(state, 'O'):
+    if is_draw(state) or is_win(state, MAXI) or is_win(state, MINI):
         return True
     else:
         return False
@@ -313,7 +314,7 @@ def center_avail(state):
     else:
         return False
 
-def static_value(state, maxi='X', mini='O'):
+def static_value(state, MAXI, MINI):
     """
     
 
@@ -321,9 +322,9 @@ def static_value(state, maxi='X', mini='O'):
     ----------
     state : list
         A list of length 10, representing a particular state of the game.
-    maxi : str
+    MAXI : str
         The Maximizer player.
-    mini : str
+    MINI : str
         The Minimizer player.
 
     Returns
@@ -333,35 +334,35 @@ def static_value(state, maxi='X', mini='O'):
 
     """
     value = 0
-    if is_win(state, maxi):
+    if is_win(state, MAXI):
         value = 100
     else:
-        if is_win(state, mini):
+        if is_win(state, MINI):
             value = -100
         else:
             if is_draw(state):
                 value = 0
             else:
-                if is_two_ways(state, maxi):
+                if is_two_ways(state, MAXI):
                     value += 50
-                if is_a_way(state, maxi):
+                if is_a_way(state, MAXI):
                     value += 10
-                if has_center(state, maxi):
+                if has_center(state, MAXI):
                     value += 5
-                if has_corner(state, maxi):
+                if has_corner(state, MAXI):
                     value += 1
                 
-                if is_two_ways(state, mini):
+                if is_two_ways(state, MINI):
                     value -= 50
-                if is_a_way(state, mini):
+                if is_a_way(state, MINI):
                     value -= 10
-                if has_center(state, mini):
+                if has_center(state, MINI):
                     value -= 5
-                if has_corner(state, mini):
+                if has_corner(state, MINI):
                     value -= 1
     return value
 
-def get_all_next_moves(state, maxi, mini):
+def get_all_next_moves(state, MAXI, MINI):
     """
     
 
@@ -369,9 +370,9 @@ def get_all_next_moves(state, maxi, mini):
     ----------
     state : list
         A list of length 10, representing a particular state of the game.
-    maxi : str
+    MAXI : str
         The Maximizer player.
-    mini : str
+    MINI : str
         The Minimizer player.
 
     Returns
@@ -397,10 +398,10 @@ def get_all_next_moves(state, maxi, mini):
         for index in indices:
             temp_state = copy.deepcopy(state)
             temp_state[index] = player
-            if player == maxi:
-                temp_state[9] = mini
-            elif player == mini:
-                temp_state[9] = maxi
+            if player == MAXI:
+                temp_state[9] = MINI
+            elif player == MINI:
+                temp_state[9] = MAXI
             moves.append(temp_state)
         return moves
 
@@ -447,14 +448,14 @@ def get_all_next_moves(state, maxi, mini):
 ##            return [alpha, a_move]
 ##    return [v, move]
 
-def minimax(state, depth, alpha, beta, maxi, mini):
+def minimax(state, depth, alpha, beta, MAXI, MINI):
     if end_state(state) or depth == 0:
-        return [static_value(state, maxi, mini), ""]
-    next_moves = get_all_next_moves(state, maxi, mini)
+        return [static_value(state, MAXI, MINI), ""]
+    next_moves = get_all_next_moves(state, MAXI, MINI)
     move = []
-    if state[9] == maxi:
+    if state[9] == MAXI:
         for s in next_moves:
-            score = minimax(s, depth - 1, alpha, beta, maxi, mini)[0]
+            score = minimax(s, depth - 1, alpha, beta, MAXI, MINI)[0]
             if score > alpha:
                 move = copy.deepcopy(s)
                 alpha = score
@@ -463,9 +464,9 @@ def minimax(state, depth, alpha, beta, maxi, mini):
         # print('# maximizer')
         # print(move)
         return [alpha, move]
-    elif state[9] == mini:
+    elif state[9] == MINI:
         for s in next_moves:
-            score = minimax(s, depth - 1, alpha, beta, maxi, mini)[0]
+            score = minimax(s, depth - 1, alpha, beta, MAXI, MINI)[0]
             if score < beta:
                 move = copy.deepcopy(s)
                 beta = score
@@ -495,12 +496,12 @@ def animation():
     sleep(short_delay)
 
 
-# minimizer plays first
+# MINImizer plays first
 if __name__ == '__main__':
     # animation()
-    maxi = 'X'
-    mini = 'O'
-    game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', 'O']
+    MAXI = 'X'
+    MINI = 'O'
+    game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', MINI]
     gp = copy.deepcopy(game)
     for g in range(0, 10):
         if gp[g] == '-':
@@ -511,11 +512,11 @@ if __name__ == '__main__':
     print("-----------------")
     print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
     opponent = int(input("Your turn: "))
-    game[opponent] = 'O'
+    game[opponent] = MINI
+    game[9] = MAXI
     
-    game[9] = 'X'
     print("Hmm...")
-    arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
+    arr = minimax(game, 9, -math.inf, math.inf, MAXI, MINI)
     game = copy.deepcopy(arr[1])
     # print(arr[0])
     gp = copy.deepcopy(game)
@@ -529,20 +530,20 @@ if __name__ == '__main__':
     print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
     print("I'm done")
     print("")
-    while (not is_win(game, 'X')) and (not is_win(game, 'O')) and (not is_draw(game)):
+    while (not is_win(game, MAXI)) and (not is_win(game, MINI)) and (not is_draw(game)):
         opponent = int(input("Your turn: "))
         if game[opponent] == '-':
-            game[opponent] = 'O'
-            game[9] = 'X'
+            game[opponent] = MINI
+            game[9] = MAXI
         else:
             print("    Open your eyes, dummy! Can't you see that's not a valid move?")
             continue
-        if (not is_win(game, 'X')) and (not is_win(game, 'O')) and (not is_draw(game)):
+        if (not is_win(game, MAXI)) and (not is_win(game, MINI)) and (not is_draw(game)):
             print("Hmm...")
-            arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
+            arr = minimax(game, 9, -math.inf, math.inf, MAXI, MINI)
             game = copy.deepcopy(arr[1])
             # print(arr[0])
-            game[9] = 'X'
+            game[9] = MAXI
         gp = copy.deepcopy(game)
         for g in range(0, 9):
             if gp[g] == '-':
@@ -555,9 +556,9 @@ if __name__ == '__main__':
         print("I'm done")
         print("")
     
-    if is_win(game, 'X'):
+    if is_win(game, MAXI):
         print("I won the game you dumbass!")
-    elif is_win(game, 'O'):
+    elif is_win(game, MINI):
         print("You won, hats off! I guess I underestimated you.")
     else:
         print("You dare draw me!")
@@ -566,8 +567,8 @@ if __name__ == '__main__':
 # # maximizer plays first
 # if __name__ == '__main__':
 #     # animation()
-#     maxi = 'X'
-#     mini = 'O'
+#     MAXI = 'X'
+#     MINI = 'O'
 #     game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', 'X']
 #     # gp = copy.deepcopy(game)
 #     # for g in range(0, 10):
@@ -581,7 +582,7 @@ if __name__ == '__main__':
 #     # opponent = int(input("Your turn: "))
 #     # game[opponent] = 'O'
 #     print("Hmm...")
-#     arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
+#     arr = minimax(game, 9, -math.inf, math.inf, MAXI, MINI)
 #     game = copy.deepcopy(arr[1])
 #     # print(arr[0])
 #     game[9] = 'X'
@@ -605,7 +606,7 @@ if __name__ == '__main__':
 #             continue
 #         if (not is_win(game, 'X')) and (not is_win(game, 'O')) and (not is_draw(game)):
 #             print("Hmm...")
-#             arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
+#             arr = minimax(game, 9, -math.inf, math.inf, MAXI, MINI)
 #             game = copy.deepcopy(arr[1])
 #             # print(arr[0])
 #             game[9] = 'X'
