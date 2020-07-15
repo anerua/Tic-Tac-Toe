@@ -232,88 +232,6 @@ def has_corner(state, focus):
     else:
         return False
 
-def has_edge(state, focus):
-    """
-    
-
-    Parameters
-    ----------
-    state : list
-        A list of length 10, representing a particular state of the game.
-    focus : str
-        A string of one character, representing the player whose status is to be checked.
-
-    Returns
-    -------
-    bool
-        Returns True if 'focus' is present in at least one of the four edge positions of 'state'. Returns False otherwise.
-
-    """
-    if (state[1] == focus) or (state[3] == focus) or (state[5] == focus) or (state[7] == focus):
-        return True
-    else:
-        return False
-
-# This function may have become obsolete
-def my_pieces(state, focus):
-    """
-    
-
-    Parameters
-    ----------
-    state : list
-        A list of length 10, representing a particular state of the game.
-    focus : str
-        A string of one character, representing the player whose status is to be checked.
-
-    Returns
-    -------
-    int
-        Returns the number of places in which 'focus' is present in 'state'.
-
-    """
-    return state.count(focus)
-
-def corner_avail(state):
-    """
-    
-
-    Parameters
-    ----------
-    state : list
-        A list of length 10, representing a particular state of the game.
-
-    Returns
-    -------
-    bool
-        Returns True if there is at least one corner position available in state. Returns False otherwise
-
-    """
-    if (state[0] == '-') or (state[2] == '-') or (state[6] == '-') or (state[8] == '-'):
-        return True
-    else:
-        return False
-
-def center_avail(state):
-    """
-    
-
-    Parameters
-    ----------
-    state : list
-        A list of length 10, representing a particular state of the game.
-
-    Returns
-    -------
-    bool
-        Returns True if the center position is available in state. Returns False otherwise
-
-    """
-    if state[4] == '-':
-        return True
-    else:
-        return False
-
 def static_value(state, MAXI, MINI):
     """
     
@@ -528,10 +446,18 @@ def animation():
 if __name__ == '__main__':
     # animation()
     while(True):
-        MAXI = input("Choose an alphabet character for me e.g. 'X' or 'O': ")[0].upper()
+        try:
+            MAXI = input("Choose an alphabet character for me e.g. 'X' or 'O': ")[0].upper()
+        except IndexError:
+            MAXI = 'X'
+            print("Lazy uh? I choose X then.")
         if MAXI.isalpha():
             while(True):
-                MINI = input("Enter your alphabet character e.g. 'X' or 'O': ")[0].upper()       
+                try:
+                    MINI = input("Enter your alphabet character e.g. 'X' or 'O': ")[0].upper()
+                except IndexError:
+                    MINI = 'O'
+                    print("Lazy uh? I choose O for you then.")
                 if MINI.isalpha() and MINI != MAXI:
                     break
                 elif MINI == MAXI:
@@ -546,7 +472,13 @@ if __name__ == '__main__':
             continue
         
     game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', MAXI]
-    human_first = input("Do you want to be the first player, Y/n? ")[0].lower()
+    try:
+        human_first = input("Do you want to be the first player, Y/n? ")[0].lower()
+    except IndexError:
+        human_first = 'y'
+        print("I mean you're a god, you shouldn't have to type right? Well newsflash, even gods aren't this proud!")
+        print("Anyway, I'll just assume you want to play first.")
+        
     
     if human_first == 'y':
         display_game(game)
