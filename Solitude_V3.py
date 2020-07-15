@@ -5,12 +5,11 @@
     Notes:
         1. A state is a particular unique game board
         2. state[9] represents the player whose turn it is to play (not the one whose play resulted in the current game state)
-        3. AI is the Maximizer and human player is the Minimizer
+        3. Solitude is the Maximizer and human player is the Minimizer
 """
 
 import copy
 import math
-from time import sleep
 
 MAXI = ''
 MINI = ''
@@ -363,8 +362,6 @@ def minimax(state, depth, alpha, beta, MAXI, MINI):
                 alpha = score
             if alpha >= beta:
                 break
-        # print('# maximizer')
-        # print(move)
         return [alpha, move]
     elif state[9] == MINI:
         for s in next_moves:
@@ -374,8 +371,6 @@ def minimax(state, depth, alpha, beta, MAXI, MINI):
                 beta = score
             if alpha >= beta:
                 break
-        # print('# minimizer')
-        # print(move)
         return [beta, move]
 
 def avail_position(state):
@@ -423,28 +418,48 @@ def display_game(state):
     print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
     print("-----------------")
     print(gp[6], "  |  ", gp[7], "  |  ", gp[8])   
+
+def instruction():
+    print("------------------------------------------------------------------")
+    print("-------------------------How to Play------------------------------")
+    print("------------------------------------------------------------------")
+    print()
+    print("Tic-Tac-Toe is a game in which two players take turns putting")
+    print("their tokens (usually X and O) on a 3x3 grid and try to get three")
+    print("of the same symbol in a line")
+    print()
+    print("Solitude is a brave and fearless minimax algorithm that is ready")
+    print("to defeat any of her adversaries.")
+    print()
+    print("To play, follow the game prompts. When prompted for a game input,")
+    print("please follow her majesty's rule below:")
+    demo_game = ['1','2','3','4','5','6','7','8','9']
+    display_game(demo_game)
+    print()
+    print("For example, to play in the top left corner, simply input 1 when")
+    print("prompted.")
+    print()
+    print("Her majesty wishes you a pleasant experience! Goodluck.")
+    print()
+    print("------------------------------------------------------------------")
+    print("------------------------------------------------------------------")
+
+def about():
+    print("------------------------------------------------------------------")
+    print("-----------------------------About--------------------------------")
+    print("------------------------------------------------------------------")
+    print()
+    print("                         Solitude v3.0                            ")
+    print("                    Written by Martins Anerua                     ")
+    print("                           July 2020                              ")
+    print()
+    print("            https://www.github.com/anerua/Solitude_v3             ")
+    print()
+    print("------------------------------------------------------------------")
+    print("------------------------------------------------------------------")    
     
-def animation():
-    short_delay = 1
-    long_delay = 3
-    print("------------------------------------------------------------------")
-    sleep(short_delay)
-    print("-----------------------Welcome to Solitude------------------------")
-    sleep(short_delay)
-    print("------------------------------------------------------------------")
-    sleep(short_delay)
-    print("MY RULE:")
-    sleep(short_delay)
-    print("      I am X and you are O. If you're not comfortable with that...")
-    sleep(long_delay)
-    print("                               FUCK OFF!")
-    sleep(short_delay)
-    print("Let's begin!")
-    sleep(short_delay)
-
-
-if __name__ == '__main__':
-    # animation()
+def play():
+    global MAXI, MINI    
     while(True):
         try:
             MAXI = input("Choose an alphabet character for me e.g. 'X' or 'O': ")[0].upper()
@@ -535,3 +550,35 @@ if __name__ == '__main__':
         print("Wow, you won! I owe you a kiss.")
     else:
         print("A draw! You just might be my perfect partner.")
+    
+    print("------------------------------------------------------------------")
+    print("------------------------------------------------------------------")
+
+def game_home():
+    print("------------------------------------------------------------------")
+    print("-----------------------Welcome to Solitude------------------------")
+    print("------------------------------------------------------------------")
+    while(True):
+        print("Type 'help' for help")
+        print("Type 'about' for additional game information")
+        print("Type 'play' to play the game")
+        print("Type 'exit' to exit the game")
+        command = input("> ").strip().lower()
+        if command == 'help':
+            instruction()
+        elif command == 'about':
+            about()
+        elif command == 'play':
+            play()
+        elif command == 'exit':
+            break
+        else:
+            print("I don't speak that language. I do hope you understand mine")
+            continue
+    print()
+    print("------------------------------------------------------------------")
+    print("--------------------Solitude says goodbye-------------------------")
+    print("------------------------------------------------------------------")
+    
+if __name__ == '__main__':
+    game_home()
