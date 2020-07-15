@@ -779,28 +779,28 @@ def get_all_next_moves_test():
             for s in cases[i]:
                 print("    ", s)
 
-def game_test():
-    state1 = ['X','O','-','-','X','-','O','X','O', 'X']
-    # max choices:
-    state1a = ['X','O','X','-','X','-','O','X','O', 'O']
-    state1b = ['X','O','-','X','X','-','O','X','O', 'O']
-    state1c = ['X','O','-','-','X','X','O','X','O', 'O']
-    # min choices:
-    state1aA = ['X','O','X','-','X','O','O','X','O', 'X']
-    state1aB = ['X','O','X','O','X','-','O','X','O', 'X']
-    state1bA = ['X','O','O','X','X','-','O','X','O', 'X']
-    state1bB = ['X','O','-','X','X','O','O','X','O', 'X']
-    state1cA = ['X','O','O','-','X','X','O','X','O', 'X']
-    state1cB = ['X','O','-','O','X','X','O','X','O', 'X']
-    # max choices:
-    state1aA1 = ['X','O','X','X','X','O','O','X','O', 'O']
-    state1aB1 = ['X','O','X','O','X','X','O','X','O', 'O']
-    state1bA1 = ['X','O','O','X','X','X','O','X','O', 'O']
-    state1bB1 = ['X','O','X','X','X','O','O','X','O', 'O']
-    state1cA1 = ['X','O','O','X','X','X','O','X','O', 'O']
-    state1cB1 = ['X','O','X','O','X','X','O','X','O', 'O']
+# def game_test():
+#     state1 = ['X','O','-','-','X','-','O','X','O', 'X']
+#     # max choices:
+#     state1a = ['X','O','X','-','X','-','O','X','O', 'O']
+#     state1b = ['X','O','-','X','X','-','O','X','O', 'O']
+#     state1c = ['X','O','-','-','X','X','O','X','O', 'O']
+#     # min choices:
+#     state1aA = ['X','O','X','-','X','O','O','X','O', 'X']
+#     state1aB = ['X','O','X','O','X','-','O','X','O', 'X']
+#     state1bA = ['X','O','O','X','X','-','O','X','O', 'X']
+#     state1bB = ['X','O','-','X','X','O','O','X','O', 'X']
+#     state1cA = ['X','O','O','-','X','X','O','X','O', 'X']
+#     state1cB = ['X','O','-','O','X','X','O','X','O', 'X']
+#     # max choices:
+#     state1aA1 = ['X','O','X','X','X','O','O','X','O', 'O']
+#     state1aB1 = ['X','O','X','O','X','X','O','X','O', 'O']
+#     state1bA1 = ['X','O','O','X','X','X','O','X','O', 'O']
+#     state1bB1 = ['X','O','X','X','X','O','O','X','O', 'O']
+#     state1cA1 = ['X','O','O','X','X','X','O','X','O', 'O']
+#     state1cB1 = ['X','O','X','O','X','X','O','X','O', 'O']
     
-    statebug = ['X','-','O','-','X','-','-','O','-', 'X']
+#     statebug = ['X','-','O','-','X','-','-','O','-', 'X']
 
 
 if __name__ == '__main__':
