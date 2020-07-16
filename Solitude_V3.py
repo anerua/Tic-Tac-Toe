@@ -1,17 +1,18 @@
 """
     Created: 29 March 2020 14:30
     Author: Martins Anerua
-    Software: PyCharm Community Edition with Anaconda plugin 2019
 
     Notes:
         1. A state is a particular unique game board
-        2. X is the Maximizer and O is the Minimizer
+        2. state[9] represents the player whose turn it is to play (not the one whose play resulted in the current game state)
+        3. Solitude is the Maximizer and human player is the Minimizer
 """
 
 import copy
 import math
-from time import sleep
 
+MAXI = ''
+MINI = ''
 
 def is_draw(state):
     """
@@ -27,10 +28,9 @@ def is_draw(state):
     bool
         Returns True if the game, as represented by state, is a draw and returns False otherwise.
 
-    """
-    
-    # possible skip: did not check if the game is a win or loss. Try to do this.
-    if is_win(state, 'X') or is_win(state, 'O'):
+    """ 
+   
+    if is_win(state, MAXI) or is_win(state, MINI):
         return False
     else:
         if '-' not in state:
@@ -182,7 +182,7 @@ def end_state(state):
         Returns True if the state is a win state for any player or a draw state. Returns False otherwise.
 
     """
-    if is_draw(state) or is_win(state, 'X') or is_win(state, 'O'):
+    if is_draw(state) or is_win(state, MAXI) or is_win(state, MINI):
         return True
     else:
         return False
@@ -231,7 +231,7 @@ def has_corner(state, focus):
     else:
         return False
 
-def has_edge(state, focus):
+def static_value(state, MAXI, MINI):
     """
     
 
@@ -239,91 +239,9 @@ def has_edge(state, focus):
     ----------
     state : list
         A list of length 10, representing a particular state of the game.
-    focus : str
-        A string of one character, representing the player whose status is to be checked.
-
-    Returns
-    -------
-    bool
-        Returns True if 'focus' is present in at least one of the four edge positions of 'state'. Returns False otherwise.
-
-    """
-    if (state[1] == focus) or (state[3] == focus) or (state[5] == focus) or (state[7] == focus):
-        return True
-    else:
-        return False
-
-# This function may have become obsolete
-def my_pieces(state, focus):
-    """
-    
-
-    Parameters
-    ----------
-    state : list
-        A list of length 10, representing a particular state of the game.
-    focus : str
-        A string of one character, representing the player whose status is to be checked.
-
-    Returns
-    -------
-    int
-        Returns the number of places in which 'focus' is present in 'state'.
-
-    """
-    return state.count(focus)
-
-def corner_avail(state):
-    """
-    
-
-    Parameters
-    ----------
-    state : list
-        A list of length 10, representing a particular state of the game.
-
-    Returns
-    -------
-    bool
-        Returns True if there is at least one corner position available in state. Returns False otherwise
-
-    """
-    if (state[0] == '-') or (state[2] == '-') or (state[6] == '-') or (state[8] == '-'):
-        return True
-    else:
-        return False
-
-def center_avail(state):
-    """
-    
-
-    Parameters
-    ----------
-    state : list
-        A list of length 10, representing a particular state of the game.
-
-    Returns
-    -------
-    bool
-        Returns True if the center position is available in state. Returns False otherwise
-
-    """
-    if state[4] == '-':
-        return True
-    else:
-        return False
-
-def static_value(state, maxi='X', mini='O'):
-    """
-    
-
-    Parameters
-    ----------
-    state : list
-        A list of length 10, representing a particular state of the game.
-    maxi : str
+    MAXI : str
         The Maximizer player.
-    mini : str
+    MINI : str
         The Minimizer player.
 
     Returns
@@ -333,35 +251,35 @@ def static_value(state, maxi='X', mini='O'):
 
     """
     value = 0
-    if is_win(state, maxi):
+    if is_win(state, MAXI):
         value = 100
     else:
-        if is_win(state, mini):
+        if is_win(state, MINI):
             value = -100
         else:
             if is_draw(state):
                 value = 0
             else:
-                if is_two_ways(state, maxi):
+                if is_two_ways(state, MAXI):
                     value += 50
-                if is_a_way(state, maxi):
+                if is_a_way(state, MAXI):
                     value += 10
-                if has_center(state, maxi):
+                if has_center(state, MAXI):
                     value += 5
-                if has_corner(state, maxi):
+                if has_corner(state, MAXI):
                     value += 1
                 
-                if is_two_ways(state, mini):
+                if is_two_ways(state, MINI):
                     value -= 50
-                if is_a_way(state, mini):
+                if is_a_way(state, MINI):
                     value -= 10
-                if has_center(state, mini):
+                if has_center(state, MINI):
                     value -= 5
-                if has_corner(state, mini):
+                if has_corner(state, MINI):
                     value -= 1
     return value
 
-def get_all_next_moves(state, maxi, mini):
+def get_all_next_moves(state, MAXI, MINI):
     """
     
 
@@ -369,9 +287,9 @@ def get_all_next_moves(state, maxi, mini):
     ----------
     state : list
         A list of length 10, representing a particular state of the game.
-    maxi : str
+    MAXI : str
         The Maximizer player.
-    mini : str
+    MINI : str
         The Minimizer player.
 
     Returns
@@ -397,164 +315,270 @@ def get_all_next_moves(state, maxi, mini):
         for index in indices:
             temp_state = copy.deepcopy(state)
             temp_state[index] = player
-            if player == maxi:
-                temp_state[9] = mini
-            elif player == mini:
-                temp_state[9] = maxi
+            if player == MAXI:
+                temp_state[9] = MINI
+            elif player == MINI:
+                temp_state[9] = MAXI
             moves.append(temp_state)
         return moves
 
+def minimax(state, depth, alpha, beta, MAXI, MINI):
+    """
+    
 
-##def max_value(state, depth, alpha, beta):
-##    if end_state(state) or depth == 0:
-##        print(state, " ", static_value(state))
-##        return static_value(state)
-##    v = -math.inf
-##    for s in get_all_next_moves(state):
-##        v = max(v, min_value(s, depth - 1, alpha, beta))
-##        # Alpha-Beta flavour
-##        alpha = max(alpha, v)
-##        if alpha >= beta:
-##            return alpha
-##    return v
-##
-##
-##def min_value(state, depth, alpha, beta):
-##    if end_state(state) or depth == 0:
-##        print(state, " ", static_value(state))
-##        return static_value(state)
-##    v = math.inf
-##    for s in get_all_next_moves(state):
-##        v = min(v, max_value(s, depth - 1, alpha, beta))
-##        # Alpha-Beta flavour
-##        beta = min(beta, v)
-##        if alpha >= beta:
-##            return beta
-##    return v
-##
-##
-##def top_level_max_value(state, depth, alpha, beta):
-##    if end_state(state) or depth == 0:
-##        return static_value(state)
-##    [v, move] = [-math.inf, None]
-##    a_move = None
-##    for s in get_all_next_moves(state):
-##        [v, move] = max([v, move], [min_value(s, depth - 1, alpha, beta), s])
-##        print(state, " ", static_value(state))
-##        # Alpha-Beta flavour
-##        [alpha, a_move] = max([alpha, a_move], [v, move])
-##        if alpha >= beta:
-##            return [alpha, a_move]
-##    return [v, move]
+    Parameters
+    ----------
+    state : list
+        A list of length 10, representing a particular state of the game.
+    depth : int
+        The depth of the search tree.
+    alpha : int
+        Alpha value.
+    beta : TYPE
+        Beta value.
+    MAXI : str
+        The Maximizer player.
+    MINI : str
+        The Minimizer player.
 
-def minimax(state, depth, alpha, beta, maxi, mini):
+    Returns
+    -------
+    list
+        Implements the minimax algorithm with alpha-beta pruning and 
+        returns a list whose first index is the alpha/beta value of the game state 
+        and the second index is another list representing the next state recommended
+        by the algorithm.
+
+    """
     if end_state(state) or depth == 0:
-        return [static_value(state, maxi, mini), ""]
-    next_moves = get_all_next_moves(state, maxi, mini)
+        return [static_value(state, MAXI, MINI), ""]
+    next_moves = get_all_next_moves(state, MAXI, MINI)
     move = []
-    if state[9] == maxi:
+    if state[9] == MAXI:
         for s in next_moves:
-            score = minimax(s, depth - 1, alpha, beta, maxi, mini)[0]
+            score = minimax(s, depth - 1, alpha, beta, MAXI, MINI)[0]
             if score > alpha:
                 move = copy.deepcopy(s)
                 alpha = score
             if alpha >= beta:
                 break
-        # print('# maximizer')
-        # print(move)
         return [alpha, move]
-    elif state[9] == mini:
+    elif state[9] == MINI:
         for s in next_moves:
-            score = minimax(s, depth - 1, alpha, beta, maxi, mini)[0]
+            score = minimax(s, depth - 1, alpha, beta, MAXI, MINI)[0]
             if score < beta:
                 move = copy.deepcopy(s)
                 beta = score
             if alpha >= beta:
                 break
-        # print('# minimizer')
-        # print(move)
         return [beta, move]
 
+def avail_position(state):
+    """
+    
 
-def animation():
-    short_delay = 1
-    long_delay = 3
-    print("------------------------------------------------------------------")
-    sleep(short_delay)
-    print("-----------------------Welcome to Solitude------------------------")
-    sleep(short_delay)
-    print("------------------------------------------------------------------")
-    sleep(short_delay)
-    print("MY RULE:")
-    sleep(short_delay)
-    print("      I am X and you are O. If you're not comfortable with that...")
-    sleep(long_delay)
-    print("                               FUCK OFF!")
-    sleep(short_delay)
-    print("Let's begin!")
-    sleep(short_delay)
+    Parameters
+    ----------
+    game : list
+        A list of length 10, representing a particular state of the game.
 
+    Returns
+    -------
+    avail : list
+        Returns a list of all available positions in state.
 
-if __name__ == '__main__':
-    # animation()
-    maxi = 'X'
-    mini = 'O'
-    game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', 'X']
-    # gp = copy.deepcopy(game)
-    # for g in range(0, 10):
-    #     if gp[g] == '-':
-    #         gp[g] = ' '
-    # print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
-    # print("-----------------")
-    # print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
-    # print("-----------------")
-    # print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
-    # opponent = int(input("Your turn: "))
-    # game[opponent] = 'O'
-    print("Hmm...")
-    arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
-    game = copy.deepcopy(arr[1])
-    # print(arr[0])
-    game[9] = 'X'
-    gp = copy.deepcopy(game)
-    for g in range(0, 10):
+    """
+    avail = []
+    for _ in range(0,9):
+        if state[_] == '-':
+            avail.append(_)
+    return avail
+
+def display_game(state):
+    """
+    
+
+    Parameters
+    ----------
+    state : list
+        A list of length 10, representing a particular state of the game.
+
+    Returns
+    -------
+    None
+        Displays game in a readable form and returns None.
+
+    """
+    gp = copy.deepcopy(state)
+    for g in range(0, 9):
         if gp[g] == '-':
             gp[g] = ' '
     print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
     print("-----------------")
     print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
     print("-----------------")
-    print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
+    print(gp[6], "  |  ", gp[7], "  |  ", gp[8])   
+
+def instruction():
+    print("------------------------------------------------------------------")
+    print("-------------------------How to Play------------------------------")
+    print("------------------------------------------------------------------")
+    print()
+    print("Tic-Tac-Toe is a game in which two players take turns putting")
+    print("their tokens (usually X and O) on a 3x3 grid and try to get three")
+    print("of the same symbol in a line")
+    print()
+    print("Solitude is a brave, bold and beautiful minimax algorithm, and she")
+    print("is ready to defeat any of her adversaries.")
+    print()
+    print("To play, simply follow the game prompts. When prompted for an input")
+    print("please follow her majesty's rule below:")
+    demo_game = ['1','2','3','4','5','6','7','8','9']
+    display_game(demo_game)
+    print()
+    print("For example, to play in the top left corner, simply input 1 when")
+    print("prompted.")
+    print()
+    print("Her majesty wishes you a pleasant experience! Goodluck.")
+    print()
+    print("------------------------------------------------------------------")
+    print("------------------------------------------------------------------")
+
+def about():
+    print("------------------------------------------------------------------")
+    print("-----------------------------About--------------------------------")
+    print("------------------------------------------------------------------")
+    print()
+    print("                         Solitude v1.0                            ")
+    print("                    Written by Martins Anerua                     ")
+    print("                           July 2020                              ")
+    print()
+    print("            https://www.github.com/anerua/Solitude_v3             ")
+    print()
+    print("------------------------------------------------------------------")
+    print("------------------------------------------------------------------")    
+    
+def play():
+    global MAXI, MINI    
+    while(True):
+        try:
+            MAXI = input("Choose an alphabet character for me e.g. 'X' or 'O': ")[0].upper()
+        except IndexError:
+            MAXI = 'X'
+            print("Lazy uh? I choose X then.")
+        if MAXI.isalpha():
+            while(True):
+                try:
+                    MINI = input("Enter your alphabet character e.g. 'X' or 'O': ")[0].upper()
+                except IndexError:
+                    MINI = 'O'
+                    print("Lazy uh? I choose O for you then.")
+                if MINI.isalpha() and MINI != MAXI:
+                    break
+                elif MINI == MAXI:
+                    print("Didn't tell you? I'm a selfish damsel. I don't share my character with anyone.")
+                    continue
+                else:
+                    print("Interesting, never knew", MINI, "was an English alphabet!")
+                    continue
+            break
+        else:
+            print("Ever heard of alphabets, like ABCDEF...? I don't think so.")
+            continue
+        
+    game = ['-', '-', '-', '-', '-', '-', '-', '-', '-', MAXI]
+    try:
+        human_first = input("Do you want to be the first player, Y/n? ")[0].lower()
+    except IndexError:
+        human_first = 'y'
+        print("I mean you're a god, you shouldn't have to type right? Well newsflash, even gods aren't this proud!")
+        print("Anyway, I'll just assume you want to play first.")
+        
+    
+    if human_first == 'y':
+        display_game(game)
+        while(True):
+            try:
+                opponent = int(input("Your turn: ")) - 1
+            except ValueError:
+                print("Really? Like that's not even a numeric character!")
+                continue
+            if opponent not in avail_position(game):
+                print("Not a valid move. Pick a valid position")
+                continue
+            else:
+                break
+            
+        game[opponent] = MINI
+    
+    print("Hmm...")
+    ai_move = minimax(game, 9, -math.inf, math.inf, MAXI, MINI)
+    game = copy.deepcopy(ai_move[1])
+    
+    display_game(game)
     print("I'm done")
     print("")
-    while (not is_win(game, 'X')) and (not is_win(game, 'O')) and (not is_draw(game)):
-        opponent = int(input("Your turn: "))
-        if game[opponent] == '-':
-            game[opponent] = 'O'
-        else:
-            print("    Open your eyes, dummy! Can't you see that's not a valid move?")
-            continue
-        if (not is_win(game, 'X')) and (not is_win(game, 'O')) and (not is_draw(game)):
+    
+    while (not is_win(game, MAXI)) and (not is_win(game, MINI)) and (not is_draw(game)):
+        while(True):
+            try:
+                opponent = int(input("Your turn: ")) - 1
+            except ValueError:
+                print("Really? Like that's not even a numeric character!")
+                continue
+            if opponent not in avail_position(game):
+                print("Not a valid move. Pick a valid position")
+                continue
+            else:
+                break
+        game[opponent] = MINI
+        game[9] = MAXI
+        
+        if (not is_win(game, MAXI)) and (not is_win(game, MINI)) and (not is_draw(game)):
             print("Hmm...")
-            arr = minimax(game, 9, -math.inf, math.inf, maxi, mini)
-            game = copy.deepcopy(arr[1])
-            # print(arr[0])
-            game[9] = 'X'
-        gp = copy.deepcopy(game)
-        for g in range(0, 10):
-            if gp[g] == '-':
-                gp[g] = ' '
-        print(gp[0], "  |  ", gp[1], "  |  ", gp[2])
-        print("-----------------")
-        print(gp[3], "  |  ", gp[4], "  |  ", gp[5])
-        print("-----------------")
-        print(gp[6], "  |  ", gp[7], "  |  ", gp[8])
+            ai_move = minimax(game, 9, -math.inf, math.inf, MAXI, MINI)
+            game = copy.deepcopy(ai_move[1])
+            game[9] = MAXI
+            
+        display_game(game)
         print("I'm done")
         print("")
     
-    if is_win(game, 'X'):
-        print("I won the game you dumbass!")
-    elif is_win(game, 'O'):
-        print("You won, hats off! I guess I underestimated you.")
+    if is_win(game, MAXI):
+        print("I won the game, duh!")
+    elif is_win(game, MINI):
+        print("Wow, you won! I owe you a kiss.")
     else:
-        print("You dare draw me!")
+        print("A draw! You just might be my perfect partner.")
+    
+    print("------------------------------------------------------------------")
+    print("------------------------------------------------------------------")
+
+def game_home():
+    print("------------------------------------------------------------------")
+    print("-----------------------Welcome to Solitude------------------------")
+    print("------------------------------------------------------------------")
+    while(True):
+        print("Type 'help' for help")
+        print("Type 'about' for additional game information")
+        print("Type 'play' to play the game")
+        print("Type 'exit' to exit the game")
+        command = input("> ").strip().lower()
+        if command == 'help':
+            instruction()
+        elif command == 'about':
+            about()
+        elif command == 'play':
+            play()
+        elif command == 'exit':
+            break
+        else:
+            print("I don't speak that language. I do hope you understand mine")
+            continue
+    print()
+    print("------------------------------------------------------------------")
+    print("--------------------Solitude says goodbye-------------------------")
+    print("------------------------------------------------------------------")
+    
+if __name__ == '__main__':
+    game_home()
