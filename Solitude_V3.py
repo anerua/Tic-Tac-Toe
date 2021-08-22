@@ -10,6 +10,7 @@
 
 import copy
 import math
+import random
 
 MAXI = ''
 MINI = ''
@@ -259,24 +260,25 @@ def static_value(state, MAXI, MINI):
         else:
             if is_draw(state):
                 value = 0
-            else:
-                if is_two_ways(state, MAXI):
-                    value += 50
-                if is_a_way(state, MAXI):
-                    value += 10
-                if has_center(state, MAXI):
-                    value += 5
-                if has_corner(state, MAXI):
-                    value += 1
+            # else:
+            #     print("I shame you")
+            #     if is_two_ways(state, MAXI):
+            #         value += 50
+            #     if is_a_way(state, MAXI):
+            #         value += 10
+            #     if has_center(state, MAXI):
+            #         value += 5
+            #     if has_corner(state, MAXI):
+            #         value += 1
                 
-                if is_two_ways(state, MINI):
-                    value -= 50
-                if is_a_way(state, MINI):
-                    value -= 10
-                if has_center(state, MINI):
-                    value -= 5
-                if has_corner(state, MINI):
-                    value -= 1
+            #     if is_two_ways(state, MINI):
+            #         value -= 50
+            #     if is_a_way(state, MINI):
+            #         value -= 10
+            #     if has_center(state, MINI):
+            #         value -= 5
+            #     if has_corner(state, MINI):
+            #         value -= 1
     return value
 
 def get_all_next_moves(state, MAXI, MINI):
@@ -305,10 +307,14 @@ def get_all_next_moves(state, MAXI, MINI):
         indices = []
         if state[4] == '-':
             indices.append(4)
-        for _ in [0,2,6,8]:
+        corners = [0,2,6,8]
+        random.shuffle(corners)
+        for _ in corners:
             if state[_] == '-':
                 indices.append(_)
-        for _ in [1,3,5,7]:
+        edges = [1,3,5,7]
+        random.shuffle(edges)
+        for _ in edges:
             if state[_] == '-':
                 indices.append(_)
         player = copy.deepcopy(state[9])
@@ -459,7 +465,8 @@ def about():
     print("------------------------------------------------------------------")    
     
 def play():
-    global MAXI, MINI    
+    global MAXI, MINI
+    level = 9    
     while(True):
         try:
             MAXI = input("Choose an alphabet character for me e.g. 'X' or 'O': ")[0].upper()
@@ -512,7 +519,7 @@ def play():
         game[opponent] = MINI
     
     print("Hmm...")
-    ai_move = minimax(game, 9, -math.inf, math.inf, MAXI, MINI)
+    ai_move = minimax(game, level, -math.inf, math.inf, MAXI, MINI)
     game = copy.deepcopy(ai_move[1])
     
     display_game(game)
@@ -536,7 +543,7 @@ def play():
         
         if (not is_win(game, MAXI)) and (not is_win(game, MINI)) and (not is_draw(game)):
             print("Hmm...")
-            ai_move = minimax(game, 9, -math.inf, math.inf, MAXI, MINI)
+            ai_move = minimax(game, level, -math.inf, math.inf, MAXI, MINI)
             game = copy.deepcopy(ai_move[1])
             game[9] = MAXI
             
