@@ -33,10 +33,7 @@ def is_draw(state):
     if is_win(state, MAXI) or is_win(state, MINI):
         return False
     else:
-        if '-' not in state:
-            return True
-        else:
-            return False
+        return '-' not in state
 
 def is_win(state, player):
     """
@@ -63,10 +60,7 @@ def is_win(state, player):
     condition6 = ((player == state[2]) and (player == state[5]) and (player == state[8]))
     condition7 = ((player == state[0]) and (player == state[4]) and (player == state[8]))
     condition8 = ((player == state[2]) and (player == state[4]) and (player == state[6]))
-    if condition1 or condition2 or condition3 or condition4 or condition5 or condition6 or condition7 or condition8:
-        return True
-    else:
-        return False
+    return condition1 or condition2 or condition3 or condition4 or condition5 or condition6 or condition7 or condition8
 
 def is_a_way(state, player):
     """
@@ -112,11 +106,8 @@ def is_a_way(state, player):
         condition8 = (('-' == state[2]) and (player == state[4]) and (player == state[6])) or (
                 (player == state[2]) and ('-' == state[4]) and (player == state[6])) or (
                              (player == state[2]) and (player == state[4]) and ('-' == state[6]))
-        if condition1 or condition2 or condition3 or condition4 or condition5 or condition6 or condition7 or condition8:
-            return True
-        else:
-            return False
-
+        return condition1 or condition2 or condition3 or condition4 or condition5 or condition6 or condition7 or condition8
+    
 def is_two_ways(state, player):
     """
     
@@ -162,10 +153,7 @@ def is_two_ways(state, player):
                 (player == state[2]) and ('-' == state[4]) and (player == state[6])) or (
                              (player == state[2]) and (player == state[4]) and ('-' == state[6]))
         conditions = [condition1, condition2, condition3, condition4, condition5, condition6, condition7, condition8]
-        if conditions.count(True) > 1:
-            return True
-        else:
-            return False
+        return conditions.count(True) > 1
 
 def end_state(state):
     """
@@ -182,10 +170,7 @@ def end_state(state):
         Returns True if the state is a win state for any player or a draw state. Returns False otherwise.
 
     """
-    if is_draw(state) or is_win(state, MAXI) or is_win(state, MINI):
-        return True
-    else:
-        return False
+    return is_draw(state) or is_win(state, MAXI) or is_win(state, MINI)
 
 def has_center(state, focus):
     """
@@ -204,10 +189,7 @@ def has_center(state, focus):
         Returns True if 'focus' is present in the center position of 'state'. Returns False otherwise.
 
     """
-    if state[4] == focus:
-        return True
-    else:
-        return False
+    return state[4] == focus
 
 def has_corner(state, focus):
     """
@@ -226,10 +208,7 @@ def has_corner(state, focus):
         Returns True if 'focus' is present in at least one of the corner positions of 'state'. Returns False otherwise.
 
     """
-    if (state[0] == focus) or (state[2] == focus) or (state[6] == focus) or (state[8] == focus):
-        return True
-    else:
-        return False
+    return (state[0] == focus) or (state[2] == focus) or (state[6] == focus) or (state[8] == focus)
 
 def static_value(state, MAXI, MINI):
     """
