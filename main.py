@@ -453,7 +453,7 @@ def about():
     print("                    Written by Martins Anerua                     ")
     print("                           July 2020                              ")
     print()
-    print("            https://www.github.com/anerua/Solitude_v3             ")
+    print("              https://github.com/anerua/Tic-Tac-Toe               ")
     print()
     print("------------------------------------------------------------------")
     print("------------------------------------------------------------------")    
